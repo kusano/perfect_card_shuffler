@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Perfect Card Shuffler</title>
+    <link rel="stylesheet" href="bulma.min.css">
+    <script src="script.js" defer></script>
+    <style>
+      .card_ {
+        display: inline-flex;
+        width: 2.5em;
+        height: 3.9em;
+        border: solid 1px #333;
+        box-shadow: #eee 1px 1px 4px;
+        border-radius: 0.2em;
+        font-size: larger;
+        text-align: center;
+        margin: 1em 0.5em;
+      }
+      .card_ > div {
+        margin: auto;
+      }
+      .spade {
+        color: #303030;
+        font-weight: bold;
+      }
+      .heart {
+        color: #f04040;
+        font-weight: bold;
+      }
+      .diamond {
+        color: #f04040;
+        font-weight: bold;
+      }
+      .club {
+        color: #303030;
+        font-weight: bold;
+      }
+      .number {
+        color: #303030;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+  <section class="section">
+    <div class="container content">
+      <h1>Perfect Card Shuffler</h1>
+      <p>
+        52枚のトランプを並べる方法は 52! = 8.07×10<sup>67</sup> 通りあります。
+        このツールは、8.07×10<sup>67</sup> 通りの並べ方を等確率で生成し、その並べ方になるディールシャッフルのような手順を出力します。
+        手順の詳細は「説明」を参照してください。
+      </p>
+      <details>
+        <summary>説明</summary>
+        <h5 class="mt-4">シャッフル手順</h5>
+        <ol>
+          <li>
+            トランプを、表から見て、<span class="spade">♠A</span>, <span class="spade">♠2</span>, …, <span class="spade">♠K</span>, <span class="heart">♥A</span>, <span class="heart">♥2</span>, …, <span class="heart">♥K</span>, <span class="diamond">♦A</span>, <span class="diamond">♦2</span>, …, <span class="diamond">♦K</span>, <span class="club">♣A</span>, <span class="club">♣2</span>, …, <span class="club">♣K</span> という順番に並べます。
+            <ul style="margin-top: 0">
+              <li>シャッフルのみが目的であり、生成された並べ方にする必要が無ければ、この手順は不要です。</li>
+            </ul>
+          </li>
+          <li>トランプを裏返しにして持ちます。</li>
+          <li>「Shuffle Sequence」の各行の数字は、上から順に各カードに対応しています。左から「Shuffle Sequence」の数字番目の山にカードを配っていきます。</li>
+          <li>行末のスラッシュ（<b>/</b>）でカードが配り終わります。</li>
+          <li>左の山が下になるように、山のカードを回収して手に持ちます。</li>
+          <li>「Shuffle Sequence」の各行について、3番目の手順から繰り返します。</li>
+          <li>正しく手順を実行できていれば、最後の行の手順を行った後でトランプを表に返すと、「Cards」の並びになっています。</li>
+        </ol>
+        <p>
+          シャッフルしている動画。
+        </p>
+        <p>
+          TODO
+        </p>
+        <h5 class="mt-4">並べ方の生成方法</h5>
+        <ol>
+          <li>0以上52!未満の一様乱数を生成し、seedとします。</li>
+          <li>seedを52で割った余りを求めた後で52で割る、51で割った余りを求めた後で51で割る、…ということを繰り返し、0以上52未満、0以上51未満、…の数列を得ます。</li>
+          <li>この数列を元に、「<a href="https://ja.wikipedia.org/wiki/%E3%83%95%E3%82%A3%E3%83%83%E3%82%B7%E3%83%A3%E3%83%BC%E2%80%93%E3%82%A4%E3%82%A7%E3%83%BC%E3%83%84%E3%81%AE%E3%82%B7%E3%83%A3%E3%83%83%E3%83%95%E3%83%AB">フィッシャー–イェーツのシャッフル</a>」でカードを並べます。</li>
+        </ol>
+      </details>
+      <details>
+        <summary>設定</summary>
+        <div class="field is-horizontal">
+          <div class="field-label is-normal">
+            <label class="label">Card number</label>
+          </div>
+          <div class="field-body">
+            <div class="field">
+              <div class="control">
+                <div class="select">
+                  <select id="number"></select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="field is-horizontal">
+          <div class="field-label">
+            <label class="label">Card face</label>
+          </div>
+          <div class="field-body">
+            <div class="field">
+              <div class="control">
+                <label class="radio">
+                  <input type="radio" id="face_card" name="face" value="card">
+                  Playing card
+                </label>
+                <label class="radio">
+                  <input type="radio" id="face_number" name="face" value="number">
+                  Number
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="field is-horizontal">
+          <div class="field-label"></div>
+        <div class="field-body">
+          <div class="field">
+            <div class="control">
+              <button id="reset" class="button is-primary">Reset</button>
+            </div>
+          </div>
+        </div>
+      </details>
+      <p class="mt-4">
+        <button id="previous" class="button is-primary" disabled>Previous</button> <button id="next" class="button is-primary">Next</button>
+      </p>
+      <div id="permalink_warning" class="notification is-warning is-light" style="display: none">
+        From permalink
+      </div>
+      <h5 class="mt-4">Seed</h5>
+      <p>
+        <span id="seed"></span> <a id="permalink" target="_blank">Permalink</a> <button id="copy_permalink" class="button is-small">Copy</button>
+      </p>
+      <h5 class="mt-4">Shuffle Sequence</h5>
+      <div id="algorithm" class="has-text-weight-bold"></div>
+      <h5 class="mt-4">Cards</h5>
+      <p>
+        <button class="button is-primary is-small" id="show_cards">Show</button> <button class="button is-primary is-small" id="hide_cards">Hide</button>
+      </p>
+      <div id="cards" style="display: flex; flex-wrap: wrap;"></div>
+      <hr>
+      <address class="has-text-right">
+        <a href="https://x.com/kusano_k">@kusano_k</a>
+      </address>
+    </div>
+  </section>
+  </body>
+</html>
