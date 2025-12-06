@@ -248,7 +248,9 @@ function loadPermalink() {
         }
     }
 
-    if (number && face && seed && 2<=number && number<=100 && (face=="card" || face=="number")) {
+    if (number && 2<=number && number<=100 &&
+        face && (face=="card" || face=="number") &&
+        seed!==undefined && 0n<=seed) {
         return {
             number,
             face,
